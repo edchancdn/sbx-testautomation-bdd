@@ -1,5 +1,6 @@
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -7,7 +8,10 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -16,12 +20,14 @@ public class ActionsTest {
 
     WebDriver driver;
     WebDriverWait wait;
+    Actions actions;
 
     @Before
     public void setUp() {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(7));
+        actions = new Actions(driver);
     }
 
     @Given("User has access to url {string}.")
@@ -38,9 +44,21 @@ public class ActionsTest {
         Assert.assertEquals(menuName, driver.getTitle());
     }
 
-    @After
-    public void tearDown() throws InterruptedException {
-        driver.quit();
+    @And("User double-clicks on the button with delayed message.")
+    public void userDoubleClicksOnTheButtonWithDelayedMessage() {
+        WebElement btn = driver.findElement(By.id("acts-btn-dbl-click-delayed"));
+        actions.moveToElement(btn)
+                .doubleClick()
+                .build().perform();
     }
 
+    @Then("User should eventually see the delayed message {string}.")
+    public void userShouldEventuallySeeTheDelayedMessage(String delayedMsg) {
+        wait.until(ExpectedConditions.textToBe(By.id("acts-msg-dbl-click-delayed"), delayedMsg));
+    }
+
+    @After
+    public void tearDown() {
+        driver.quit();
+    }
 }
