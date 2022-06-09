@@ -44,7 +44,7 @@ public class ActionsTest {
         Assert.assertEquals(menuName, driver.getTitle());
     }
 
-    @And("User double-clicks on the button with delayed message.")
+    @And("User double-clicks on the button for a delayed message.")
     public void userDoubleClicksOnTheButtonWithDelayedMessage() {
         WebElement btn = driver.findElement(By.id("acts-btn-dbl-click-delayed"));
         actions.moveToElement(btn)
